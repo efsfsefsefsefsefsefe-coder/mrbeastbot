@@ -2,8 +2,8 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
 
 // Your Discord Credentials & Config
-const BOT_TOKEN = 'MTU2NTI0MzI5Mzc0MTA5Mjg3NA.GB31Gq.pEcT-RjK1XA6mrGSJ9-aVaduP1QDhzvmO7qaPs'; 
-const CHANNEL_ID = '1565244786468716696'; 
+const BOT_TOKEN = process.env.BOT_TOKEN; 
+const CHANNEL_ID = process.env.CHANNEL_ID;
 const PORT = process.env.PORT || 3000;
 
 let pendingMessage = "";
