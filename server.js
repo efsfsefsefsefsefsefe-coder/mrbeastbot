@@ -13,7 +13,7 @@ const connectedUsers = new Set(); // Track connected users to avoid spamming joi
 const app = express();
 app.use(express.json());
 
-// Endpoint polled by Roblox Luau script
+// Endpoint polled by Roblox Luau script to receive messages from Discord
 app.get('/poll', async (req, res) => {
     const username = req.query.username;
 
@@ -36,6 +36,28 @@ app.get('/poll', async (req, res) => {
         pendingMessage = ""; // Clear message after sending
     } else {
         res.status(200).json({ message: null });
+    }
+});
+
+// NEW: Endpoint to receive chat messages sent FROM Roblox
+app.post('/chat', async (req, res) => {
+    const { username, message } = req.body;
+
+    if (!username || !message) {
+        return res.status(400).json({ error: "Missing username or message" });
+    }
+
+    console.log(`[Roblox Chat] ${username}: "${message}"`);
+
+    try {
+        const channel = await client.channels.fetch(CHANNEL_ID);
+        if (channel) {
+            await channel.send(`💬 **[${username}]**: ${message}`);
+        }
+        res.status(200).json({ success: true });
+    } catch (err) {
+        console.error('[Discord] Failed to send Roblox chat to channel:', err);
+        res.status(500).json({ error: "Failed to forward to Discord" });
     }
 });
 
